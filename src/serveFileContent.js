@@ -25,9 +25,7 @@ const serveFileContent = (dirName) => {
     }
 
     const fileName = `${dirName}${uri}`;
-    console.log(fileName);
     let content;
-
     try {
       content = fs.readFileSync(fileName);
     } catch (error) {

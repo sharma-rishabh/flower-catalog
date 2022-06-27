@@ -3,22 +3,14 @@ const { commentsToHTML, addHead } = require('./htmlGenerator.js');
 
 const parseSpecialCharacters = (string) => {
   let parsedString = string.replaceAll(/\+/g, ' ');
-  parsedString = string.replaceAll(/%0D/g, '\n');
-  parsedString = string.replaceAll(/%0A/g, '\r');
+  parsedString = parsedString.replaceAll(/%0D/g, '\n');
+  parsedString = parsedString.replaceAll(/%0A/g, '\r');
   return parsedString;
 }
 
 const parseComment = (rawName, rawComment) => {
   const date = new Date();
-  const year = date.getFullYear();
-  const month = ('' + date.getMonth()).padStart(2, 0);
-  const day = ('' + date.getDay()).padStart(2, 0);
-  const hour = ('' + date.getHours()).padStart(2, 0);
-  const min = ('' + date.getMinutes()).padStart(2, 0);
-
-  const dateString = `${day}/${month}/${year}`;
-  const timeString = `${hour}:${min}`
-  const dateTime = `${dateString} ${timeString}`;
+  const dateTime = date.toLocaleString();
 
   const name = parseSpecialCharacters(rawName);
   const comment = parseSpecialCharacters(rawComment);

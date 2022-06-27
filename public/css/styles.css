@@ -53,6 +53,25 @@
   float: left;
 }
 
+.form-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 1.5em;
+  border-bottom: 1px solid black;
+  margin-bottom: 2em;
+}
+
+.form-heading a {
+  color: green;
+  margin-top: 25px;
+  padding-right: 10px;
+}
+
+.form-heading h2 {
+  color: orange;
+}
+
 .main-heading h2 {
   color: orange;
 }
@@ -66,4 +85,21 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.form-heading a {
+  color: green;
+  margin-top: 25px;
+  padding-right: 10px;
+}
+
+form div {
+  margin-bottom: 1em;
+}
+
+.name,
+.time-stamp,
+.comment {
+  display: inline-block;
+  margin-right: 1em;
 }

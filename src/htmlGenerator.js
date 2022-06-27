@@ -24,17 +24,44 @@ const generateHead = () => {
   return generateTag('head', title + link);
 }
 
-const commentsToHTML = (comments) => {
-  const commentsDiv = comments.map(
-    ({ name, comment, dateTime }) => {
-      const nameDiv = generateTag('div', name, createAttributes({ class: 'name' }));
-      const timeStamp = generateTag('div', dateTime, createAttributes({ class: 'time-stamp' }));
-      const commentDiv = generateTag('p', comment, createAttributes({ class: 'comment' }));
-      return generateTag('div', nameDiv + timeStamp + commentDiv);
-    }
+const createNameDiv = (name) => {
+  return generateTag(
+    'div',
+    `From ${name}`,
+    createAttributes({ class: 'name' })
   );
-  return commentsDiv.join('');
 };
+
+const createTimeStampDiv = (timeStamp) => {
+  return generateTag(
+    'div',
+    `At ${timeStamp} :`,
+    createAttributes({ class: 'time-stamp' })
+  );
+};
+
+const createCommentDiv = (comment) => {
+  return generateTag(
+    'p',
+    comment,
+    createAttributes({ class: 'comment' })
+  );
+};
+
+const commentsToHTML = (comments) => {
+  const commentsDiv = [];
+
+  for (let index = comments.length - 1; index >= 0; index--) {
+    const { name, comment, dateTime } = comments[index];
+    const nameDiv = createNameDiv(name);
+    const timeStamp = createTimeStampDiv(dateTime);
+    const commentDiv = createCommentDiv(comment);
+    commentsDiv.push(generateTag('div', nameDiv + timeStamp + commentDiv));
+  }
+  return commentsDiv.join('');
+}
+
+
 
 const addHead = (form, comments) => {
   const body = generateTag('body', form + comments);

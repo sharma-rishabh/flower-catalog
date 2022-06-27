@@ -3,6 +3,7 @@ const { parseRequest } = require('./src/parseRequest.js');
 const { serveFileContent } = require('./src/serveFileContent.js');
 const { Response } = require('./src/response.js');
 const { notFoundHandler } = require('./src/notFound.js');
+const { guestBookHandler } = require('./src/guestBookHandler.js');
 
 const createHandler = (handlers) => (response, request) => {
   for (const handler of handlers) {
@@ -32,6 +33,7 @@ const main = (dirName) => {
 
   const handlers = [
     serveFileContent(dirName),
+    guestBookHandler,
     notFoundHandler
   ];
 

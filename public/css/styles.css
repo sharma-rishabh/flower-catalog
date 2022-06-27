@@ -1,0 +1,25 @@
+* {
+  font-family: system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+}
+
+.main-heading {
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 1.5em;
+  border-bottom: 1px solid black;
+}
+
+.main-heading h2 {
+  color: orange;
+}
+
+.content {
+  display: flex;
+}
+
+.content nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

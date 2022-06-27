@@ -32,18 +32,26 @@ const writeJSON = (fileName, content) => {
   fs.writeFileSync(fileName, JSON.stringify(content), 'utf-8');
 };
 
+const addAnswer = (name, comment) => {
+  const comments = readJSON('./data/comments.json') || [];
+  const commentObj = parseComment(name, comment);
+  comments.push(commentObj);
+  writeJSON('./data/comments.json', comments);
+}
+
+const getHTMLPage = () => {
+  const comments = readJSON('./data/comments.json') || [];
+  const form = fs.readFileSync('./src/commentForm.html', 'utf-8')
+  const commentsHTML = commentsToHTML(comments);
+  return addHead(form, commentsHTML);
+}
+
 const guestBook = (request, response) => {
-  let comments = readJSON('./data/comments.json') || [];
   const { name, comment } = request.queryParams;
   if (name && comment) {
-    const commentObj = parseComment(name, comment);
-    comments.push(commentObj);
-    writeJSON('./data/comments.json', comments);
+    addAnswer(name, comment);
   }
-  const form = fs.readFileSync('./src/commentForm.html', 'utf-8')
-  comments = readJSON('./data/comments.json') || [];
-  const commentsHTML = commentsToHTML(comments);
-  const finalPage = addHead(form, commentsHTML);
+  const finalPage = getHTMLPage();
   response.setHeaders('content-type', 'text/html');
   response.send(finalPage);
   return;

@@ -9,6 +9,28 @@
   border-bottom: 1px solid black;
 }
 
+.abeliophyllum-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 1.5em;
+  border-bottom: 1px solid black;
+}
+
+.abeliophyllum-heading a {
+  color: green;
+  margin-top: 25px;
+  padding-right: 10px;
+}
+
+.abeliophyllum-heading h2 {
+  color: orange
+}
+
+.abeliophyllum-content figure {
+  float: left;
+}
+
 .main-heading h2 {
   color: orange;
 }

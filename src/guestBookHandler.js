@@ -50,6 +50,9 @@ const guestBook = (request, response) => {
   const { name, comment } = request.queryParams;
   if (name && comment) {
     addAnswer(name, comment);
+    response.statusCode = 302;
+    response.setHeaders('location', '/guest-book')
+    response.send('');
   }
   const finalPage = getHTMLPage();
   response.setHeaders('content-type', 'text/html');

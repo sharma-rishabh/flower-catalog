@@ -4,6 +4,7 @@ const { serveFileContent } = require('./src/serveFileContent.js');
 const { Response } = require('./src/response.js');
 const { notFoundHandler } = require('./src/notFound.js');
 const { guestBookHandler } = require('./src/guestBookHandler.js');
+const { Comments } = require('./src/comments.js');
 
 const createHandler = (handlers) => (response, request) => {
   for (const handler of handlers) {
@@ -29,15 +30,17 @@ const startServer = (port, handler) => {
   server.listen(port, () => console.log('listening on port: 5555'));
 };
 
-const main = (dirName) => {
+const main = ([dirName, commentFile]) => {
+  const comments = new Comments(commentFile);
+  comments.loadComments();
 
   const handlers = [
     serveFileContent(dirName),
-    guestBookHandler,
+    guestBookHandler(comments),
     notFoundHandler
   ];
 
   startServer(5555, createHandler(handlers));
 };
 
-main(process.argv[2]);
+main(process.argv.slice(2));

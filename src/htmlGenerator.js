@@ -48,25 +48,16 @@ const createCommentDiv = (comment) => {
   );
 };
 
-const commentsToHTML = (comments) => {
-  const commentsDiv = [];
-
-  for (let index = comments.length - 1; index >= 0; index--) {
-    const { name, comment, dateTime } = comments[index];
-    const nameDiv = createNameDiv(name);
-    const timeStamp = createTimeStampDiv(dateTime);
-    const commentDiv = createCommentDiv(comment);
-    commentsDiv.push(generateTag('div', nameDiv + timeStamp + commentDiv));
-  }
-  return commentsDiv.join('');
-}
-
-
-
 const addHead = (form, comments) => {
   const body = generateTag('body', form + comments);
   const head = generateHead();
   return generateTag('html', head + body);
 };
 
-module.exports = { commentsToHTML, addHead };
+module.exports = {
+  createNameDiv,
+  createTimeStampDiv,
+  createCommentDiv,
+  addHead,
+  generateTag
+};

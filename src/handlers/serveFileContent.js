@@ -13,18 +13,18 @@ const mimeTypes = (fileName) => {
 }
 
 
-const serveFileContent = (dirName) => {
+const createServeStatic = (dirName) => {
   if (!fs.existsSync(dirName)) {
     throw new Error(`${dirName} does not exists.`)
   }
   return (request, response) => {
-    let { uri } = request;
+    let uri = request.url.pathname;
 
     if (uri === '/') {
       uri = '/index.html';
     }
 
-    const fileName = `${dirName}${uri}`;
+    const fileName = dirName + uri;
     let content;
     try {
       content = fs.readFileSync(fileName);
@@ -33,10 +33,10 @@ const serveFileContent = (dirName) => {
     }
 
     const type = mimeTypes(fileName) || 'text/plain';
-    response.setHeaders('content-type', type);
-    response.send(content);
+    response.setHeader('content-type', type);
+    response.end(content);
     return true;
   }
 }
 
-module.exports = { serveFileContent };
+module.exports = { createServeStatic };

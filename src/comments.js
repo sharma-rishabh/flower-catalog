@@ -17,13 +17,6 @@ const writeJSON = (fileName, content) => {
   fs.writeFileSync(fileName, JSON.stringify(content), 'utf-8');
 };
 
-const parseSpecialCharacters = (string) => {
-  let parsedString = string.replaceAll(/\+/g, ' ');
-  parsedString = parsedString.replaceAll(/%0D/g, '\n');
-  parsedString = parsedString.replaceAll(/%0A/g, '\r');
-  return parsedString;
-}
-
 class Comments {
   #location;
   #comments;
@@ -36,11 +29,9 @@ class Comments {
     this.#comments = readJSON(this.#location) || [];
   }
 
-  #parseComment(rawName, rawComment) {
+  #parseComment(name, comment) {
     const date = new Date();
     const dateTime = date.toLocaleString();
-    const name = parseSpecialCharacters(rawName);
-    const comment = parseSpecialCharacters(rawComment);
     return { name, comment, dateTime };
   }
 

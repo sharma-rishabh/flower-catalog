@@ -25,7 +25,7 @@ const guestBook = (request, response) => {
 
 const guestBookHandler = (comments) => (request, response) => {
   const uri = request.url.pathname;
-  if (uri === '/guest-book') {
+  if (uri === '/guest-book' && request.method === 'GET') {
     request.comments = comments;
     guestBook(request, response);
     return true;

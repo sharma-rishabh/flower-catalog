@@ -18,6 +18,10 @@ const createServeStatic = (dirName) => {
     throw new Error(`${dirName} does not exists.`)
   }
   return (request, response) => {
+    if (request.method !== 'GET') {
+      return false;
+    }
+
     let uri = request.url.pathname;
 
     if (uri === '/') {

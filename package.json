@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js ./public ./data/comments.json"
+    "start": " dirName=./public commentsFile=./data/comments.json node index.js"
   },
   "repository": {
     "type": "git",

@@ -1,8 +1,4 @@
 const fs = require('fs');
-const {
-  createCommentDiv, createTimeStampDiv, createNameDiv, generateTag
-} = require('./htmlGenerator.js');
-
 const readJSON = (fileName) => {
   let content;
   try {
@@ -40,17 +36,12 @@ class Comments {
     writeJSON(this.#location, this.#comments);
   }
 
-  toHTML() {
-    const commentsDiv = [];
+  get comments() {
+    return this.#comments;
+  }
 
-    for (let index = this.#comments.length - 1; index >= 0; index--) {
-      const { name, comment, dateTime } = this.#comments[index];
-      const nameDiv = createNameDiv(name);
-      const timeStamp = createTimeStampDiv(dateTime);
-      const commentDiv = createCommentDiv(comment);
-      commentsDiv.push(generateTag('div', nameDiv + timeStamp + commentDiv));
-    }
-    return commentsDiv.join('');
+  toJSON() {
+    return JSON.stringify(this.#comments);
   }
 }
 

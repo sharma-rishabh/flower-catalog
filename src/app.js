@@ -32,18 +32,8 @@ const createApp = (config, logger, fs) => {
   app.use('/api', apiRouter)
   apiRouter.get('/flowers', flowerApiHandler(flowers));
   apiRouter.get('/guest-book', guestApiHandler(comments));
+  app.use(notFoundHandler);
   return app;
 }
-
-
-
-// const app = ({ dirName, commentsFile }, fs = require('fs')) => {
-
-//   const router = createRouter([
-//     guestBookRouter(comments, fs.readFileSync, fs.writeFileSync, commentsFile),
-//     notFoundHandler
-//   ]);
-//   return router
-// }
 
 module.exports = { createApp };

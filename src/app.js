@@ -6,6 +6,7 @@ const { Comments } = require('./comments.js');
 const { logRequest } = require('./handlers/logRequest.js');
 const { addTimeStamp } = require('./handlers/addTimeStamp.js');
 const { apiRouter } = require('./handlers/apiHandler.js');
+const { parseBodyParams } = require('./handlers/parseBodyParams.js')
 
 const readJSON = (fileName, reader) => {
   let content;
@@ -29,11 +30,12 @@ const app = ({ dirName, commentsFile }, fs = require('fs')) => {
   const router = createRouter([
     addTimeStamp,
     logRequest,
+    parseBodyParams,
     createServeStatic(dirName),
     guestBookRouter(comments, fs.readFileSync, fs.writeFileSync, commentsFile),
     apiRouter(comments, flowers),
-    notFoundHandler]
-  );
+    notFoundHandler
+  ]);
   return router
 }
 

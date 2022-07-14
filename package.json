@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/sharma-rishabh/flower-catalog/issues"
   },
-  "homepage": "https://github.com/sharma-rishabh/flower-catalog#readme"
+  "homepage": "https://github.com/sharma-rishabh/flower-catalog#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
 }

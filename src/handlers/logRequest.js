@@ -1,7 +1,6 @@
-const logRequest = (request, response) => {
-  console.log(request.timeStamp.toLocaleString(),
-    request.method, request.url.pathname);
-  return false;
+const logRequest = (logger) => (request, response, next) => {
+  logger(request.method, request.url, request.timeStamp.toLocaleString());
+  next();
 };
 
 module.exports = { logRequest };

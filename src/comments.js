@@ -6,7 +6,7 @@ class Comments {
 
   #parseComment(name, comment, timeStamp) {
     const dateTime = timeStamp.toLocaleString();
-    return { name, comment, dateTime, timeStamp };
+    return { name, comment, dateTime };
   }
 
   addComment(name, comment, timeStamp) {

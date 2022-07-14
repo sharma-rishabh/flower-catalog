@@ -1,9 +1,5 @@
-const { app } = require('./src/app.js');
-const { startServer } = require('./src/server/server.js');
+const fs = require('fs');
+const { createApp } = require('./src/app.js');
 
-const main = () => {
-  const { dirName, commentsFile } = process.env;
-  startServer(9090, app({ dirName, commentsFile }));
-};
-
-main()
+const app = createApp(process.env, console.log, fs);
+app.listen(4444, () => { console.log('listening on http://localhost:4444'); });

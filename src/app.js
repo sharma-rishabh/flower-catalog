@@ -1,42 +1,51 @@
+const express = require('express');
+
 const { createRouter } = require('./server/router.js');
-const { createServeStatic } = require('./handlers/serveFileContent.js');
 const { notFoundHandler } = require('./handlers/notFound.js');
-const { guestBookRouter } = require('./handlers/guestBookHandler.js');
+const { guestBookRouter, guestBookHandler, addComment } = require('./handlers/guestBookHandler.js');
 const { Comments } = require('./comments.js');
 const { logRequest } = require('./handlers/logRequest.js');
 const { addTimeStamp } = require('./handlers/addTimeStamp.js');
 const { apiRouter } = require('./handlers/apiHandler.js');
-const { parseBodyParams } = require('./handlers/parseBodyParams.js')
 
 const readJSON = (fileName, reader) => {
-  let content;
   try {
-    content = reader(fileName, 'utf8')
+    const content = reader(fileName, 'utf8');
     return JSON.parse(content);
   } catch (error) {
     return '';
   }
 };
 
-const app = ({ dirName, commentsFile }, fs = require('fs')) => {
-  const commentsJSON = readJSON(commentsFile, fs.readFileSync);
+const createApp = (config, logger, fs) => {
+  const commentsJSON = readJSON(config.commentsFile, fs.readFileSync) || [];
   const comments = new Comments(commentsJSON);
 
   const flowers = [
     { name: 'abeliophyllum' },
     { name: 'agerantum' }
   ];
-
-  const router = createRouter([
-    addTimeStamp,
-    logRequest,
-    parseBodyParams,
-    createServeStatic(dirName),
-    guestBookRouter(comments, fs.readFileSync, fs.writeFileSync, commentsFile),
-    apiRouter(comments, flowers),
-    notFoundHandler
-  ]);
-  return router
+  const app = express();
+  app.use(addTimeStamp);
+  app.use(logRequest(logger));
+  app.use(express.static(config.dirName));
+  app.get('/guest-book', guestBookHandler(comments, fs));
+  app.use(express.urlencoded({ extended: true }))
+  app.post('/add-comment', addComment(comments, config.commentsFile, fs));
+  return app;
 }
 
-module.exports = { app };
+
+
+// const app = ({ dirName, commentsFile }, fs = require('fs')) => {
+
+
+//   const router = createRouter([
+//     guestBookRouter(comments, fs.readFileSync, fs.writeFileSync, commentsFile),
+// app.get(apiRouter(comments, flowers));
+//     notFoundHandler
+//   ]);
+//   return router
+// }
+
+module.exports = { createApp };

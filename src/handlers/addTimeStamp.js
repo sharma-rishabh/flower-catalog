@@ -1,6 +1,6 @@
-const addTimeStamp = (request, response) => {
+const addTimeStamp = (request, response, next) => {
   request.timeStamp = new Date();
-  return false;
+  next();
 };
 
 module.exports = { addTimeStamp }

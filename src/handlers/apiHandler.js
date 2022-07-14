@@ -1,13 +1,9 @@
-const guestApiHandler = (request, response) => {
-  response.setHeader('content-type', 'application/json');
-  response.end(request.guestBook.toJSON());
-  return true;
+const guestApiHandler = (comment) => (request, response) => {
+  response.json(comment.toJSON());
 };
 
-const flowerApiHandler = (request, response) => {
-  response.setHeader('content-type', 'application/json');
-  response.end(JSON.stringify(request.flowers));
-  return true;
+const flowerApiHandler = (flowers) => (request, response) => {
+  response.json(JSON.stringify(flowers));
 };
 
 const apiRouter = (guestBook, flowers) => (request, response) => {
@@ -25,4 +21,4 @@ const apiRouter = (guestBook, flowers) => (request, response) => {
   return false;
 };
 
-module.exports = { apiRouter };
+module.exports = { flowerApiHandler, guestApiHandler };

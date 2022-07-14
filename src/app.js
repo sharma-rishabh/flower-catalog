@@ -1,12 +1,11 @@
 const express = require('express');
 
-const { createRouter } = require('./server/router.js');
 const { notFoundHandler } = require('./handlers/notFound.js');
-const { guestBookRouter, guestBookHandler, addComment } = require('./handlers/guestBookHandler.js');
+const { guestBookHandler, addComment } = require('./handlers/guestBookHandler.js');
 const { Comments } = require('./comments.js');
 const { logRequest } = require('./handlers/logRequest.js');
 const { addTimeStamp } = require('./handlers/addTimeStamp.js');
-const { apiRouter } = require('./handlers/apiHandler.js');
+const { flowerApiHandler, guestApiHandler } = require('./handlers/apiHandler.js');
 
 const readJSON = (fileName, reader) => {
   try {
@@ -20,11 +19,8 @@ const readJSON = (fileName, reader) => {
 const createApp = (config, logger, fs) => {
   const commentsJSON = readJSON(config.commentsFile, fs.readFileSync) || [];
   const comments = new Comments(commentsJSON);
+  const flowers = readJSON(config.flowerData, fs.readFileSync);
 
-  const flowers = [
-    { name: 'abeliophyllum' },
-    { name: 'agerantum' }
-  ];
   const app = express();
   app.use(addTimeStamp);
   app.use(logRequest(logger));
@@ -32,6 +28,10 @@ const createApp = (config, logger, fs) => {
   app.get('/guest-book', guestBookHandler(comments, fs));
   app.use(express.urlencoded({ extended: true }))
   app.post('/add-comment', addComment(comments, config.commentsFile, fs));
+  const apiRouter = express.Router();
+  app.use('/api', apiRouter)
+  apiRouter.get('/flowers', flowerApiHandler(flowers));
+  apiRouter.get('/guest-book', guestApiHandler(comments));
   return app;
 }
 
@@ -39,10 +39,8 @@ const createApp = (config, logger, fs) => {
 
 // const app = ({ dirName, commentsFile }, fs = require('fs')) => {
 
-
 //   const router = createRouter([
 //     guestBookRouter(comments, fs.readFileSync, fs.writeFileSync, commentsFile),
-// app.get(apiRouter(comments, flowers));
 //     notFoundHandler
 //   ]);
 //   return router

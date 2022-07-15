@@ -14,7 +14,7 @@ const mockReadFileSync = (ExpectedFiles, ExpectedContent) => {
 
 describe('GET /abc', () => {
   it('should show not found handler', (done) => {
-    const req = request(createApp(process.env, () => { }, {}));
+    const req = request(createApp(process.env, {}, () => { }, {}));
     req.get('/abc')
       .expect('content-type', 'text/html; charset=utf-8')
       .expect(404, done)
@@ -23,7 +23,7 @@ describe('GET /abc', () => {
 
 describe('GET /staticFile', () => {
   it('should do serve a static file from the given directory.', (done) => {
-    const req = request(createApp(process.env, () => { }, {}));
+    const req = request(createApp(process.env, {}, () => { }, {}));
     req.get('/index.html')
       .expect('content-type', 'text/html; charset=UTF-8')
       .expect('content-length', '756')
@@ -40,7 +40,7 @@ describe('GET /guest-book', () => {
     fs = {
       readFileSync: mockedReadFileSync
     }
-    const req = request(createApp(process.env, () => { }, fs));
+    const req = request(createApp(process.env, {}, () => { }, fs));
     req.get('/guest-book')
       .expect('content-type', 'text/html; charset=utf-8')
       .expect(200, done)

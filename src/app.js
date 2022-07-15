@@ -7,6 +7,7 @@ const { logRequest } = require('./handlers/logRequest.js');
 const { addTimeStamp } = require('./handlers/addTimeStamp.js');
 const { flowerApiHandler, guestApiHandler } = require('./handlers/apiHandler.js');
 const { parseCookies } = require('./handlers/parseCookies.js');
+const { createInjectSession } = require('./createInjectSession.js');
 
 const readJSON = (fileName, reader) => {
   try {
@@ -21,7 +22,7 @@ const isConfigValid = (config) => {
   return config.commentsFile && config.flowerData && config.dirName;
 }
 
-const createApp = (config, logger, fs) => {
+const createApp = (config, sessions, logger, fs) => {
   if (!isConfigValid(config)) {
     throw new Error('Config is not provided properly.');
   }
@@ -32,16 +33,19 @@ const createApp = (config, logger, fs) => {
 
   const app = express();
   app.use(addTimeStamp);
-  app.use(parseCookies);
   app.use(logRequest(logger));
+  app.use(parseCookies);
+  app.use(createInjectSession(sessions));
   app.use(express.static(config.dirName));
   app.get('/guest-book', guestBookHandler(comments, fs));
   app.use(express.urlencoded({ extended: true }))
   app.post('/add-comment', addComment(comments, config.commentsFile, fs));
+
   const apiRouter = express.Router();
   app.use('/api', apiRouter)
   apiRouter.get('/flowers', flowerApiHandler(flowers));
   apiRouter.get('/guest-book', guestApiHandler(comments));
+
   app.use(notFoundHandler);
   return app;
 }

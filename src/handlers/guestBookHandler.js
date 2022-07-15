@@ -24,7 +24,7 @@ const addComment = (comments, path, fs) => (request, response) => {
 
 const guestBookHandler = (comments, fs) => (request, response) => {
   const finalPage = getHTMLPage(comments.comments, fs.readFileSync);
-  response.setHeader('content-type', 'text/html');
+  response.type('.html');
   response.end(finalPage);
   return;
 };

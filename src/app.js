@@ -16,7 +16,15 @@ const readJSON = (fileName, reader) => {
   }
 };
 
+const isConfigValid = (config) => {
+  return config.commentsFile && config.flowerData && config.dirName;
+}
+
 const createApp = (config, logger, fs) => {
+  if (!isConfigValid(config)) {
+    throw new Error('Config is not provided properly.');
+  }
+
   const commentsJSON = readJSON(config.commentsFile, fs.readFileSync) || [];
   const comments = new Comments(commentsJSON);
   const flowers = readJSON(config.flowerData, fs.readFileSync);

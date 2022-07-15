@@ -2,11 +2,12 @@ const assert = require('assert');
 const request = require('supertest');
 const { createApp } = require('../src/app.js');
 
-const mockReadFileSync = (ExpectedFiles, ExpectedContent) => {
+const mockReadFileSync = (expectedFiles, expectedContent) => {
   let index = 0;
   return (file, encoding) => {
-    assert.strictEqual(file, ExpectedFiles[index]);
-    const content = ExpectedContent[index];
+    assert.strictEqual(file, expectedFiles[index]);
+    assert.strictEqual(encoding, 'utf8');
+    const content = expectedContent[index];
     index++;
     return content;
   }
@@ -37,12 +38,150 @@ describe('GET /guest-book', () => {
       ['./src/commentForm.html'],
       ['hello']
     );
-    fs = {
+    const fs = {
+      readFileSync: mockedReadFileSync
+    }
+    const sessions = { 1: { sessionId: 1, username: 'rishabh' } }
+    const req = request(createApp(process.env, sessions, () => { }, fs));
+    req.get('/guest-book')
+      .set('Cookie', 'sessionId=1')
+      .expect(200, done)
+  });
+  it('should redirect to login if not logged in.', (done) => {
+    const mockedReadFileSync = mockReadFileSync(
+      ['./src/commentForm.html'],
+      ['hello']
+    );
+    const fs = {
+      readFileSync: mockedReadFileSync
+    }
+    const sessions = { 1: { sessionId: 1, username: 'rishabh' } }
+    const req = request(createApp(process.env, sessions, () => { }, fs));
+    req.get('/guest-book')
+      .expect(302, done)
+  });
+});
+
+describe('GET /login', () => {
+  it('should redirect to /login.html', (done) => {
+    const mockedReadFileSync = mockReadFileSync(
+      ['./src/commentForm.html'],
+      ['hello']
+    );
+    const fs = {
       readFileSync: mockedReadFileSync
     }
     const req = request(createApp(process.env, {}, () => { }, fs));
-    req.get('/guest-book')
-      .expect('content-type', 'text/html; charset=utf-8')
-      .expect(200, done)
+    req.get('/login')
+      .expect('location', '/login.html')
+      .expect(302, done)
+  });
+  it('should redirect to /guest-book if already logged in.', (done) => {
+    const mockedReadFileSync = mockReadFileSync(
+      ['./src/commentForm.html'],
+      ['hello']
+    );
+    const fs = {
+      readFileSync: mockedReadFileSync
+    }
+    const sessions = { 1: { sessionId: 1, name: 'rishabh' } };
+    const req = request(createApp(process.env, sessions, () => { }, fs));
+    req.get('/login')
+      .set('Cookie', 'sessionId=1')
+      .expect('location', '/guest-book')
+      .expect(302, done)
+  });
+});
+
+describe('POST /login', () => {
+  it('should post the login details', (done) => {
+    const users = { rishabh: { username: 'rishabh', password: '123' } };
+    const mockedReadFileSync = mockReadFileSync(
+      [process.env.commentsFile, process.env.flowerData, process.env.usersData, './data/users.json'],
+      ['hello', , JSON.stringify(users)]
+    );
+    const fs = {
+      readFileSync: mockedReadFileSync
+    }
+    const sessions = { 1: { sessionId: 1, username: 'rishabh' } }
+    const req = request(createApp(process.env, sessions, () => { }, fs));
+    req.post('/login')
+      .send('username=rishabh&password=123')
+      .expect('location', '/guest-book')
+      .expect(302, done)
+  });
+  it('should redirect to /guest-book if already logged in', (done) => {
+    const users = { rishabh: { username: 'rishabh', password: '123' } };
+    const mockedReadFileSync = mockReadFileSync(
+      [process.env.commentsFile, process.env.flowerData, process.env.usersData, './data/users.json'],
+      ['hello', , JSON.stringify(users)]
+    );
+    const fs = {
+      readFileSync: mockedReadFileSync
+    }
+    const sessions = { 1: { sessionId: 1, username: 'rishabh' } }
+    const req = request(createApp(process.env, sessions, () => { }, fs));
+    req.post('/login')
+      .send('username=rishabh&password=123')
+      .set('Cookie', 'sessionId=1')
+      .expect('location', '/guest-book')
+      .expect(302, done)
+  });
+  it('should send 422 if fields are not given properly', (done) => {
+    const users = { rishabh: { username: 'rishabh', password: '123' } };
+
+    const mockedReadFileSync = mockReadFileSync(
+      [process.env.commentsFile, process.env.flowerData, process.env.usersData, './data/users.json'],
+      ['hello', , JSON.stringify(users)]
+    );
+
+    const fs = {
+      readFileSync: mockedReadFileSync
+    }
+
+    const sessions = { 1: { sessionId: 1, username: 'rishabh' } }
+    const req = request(createApp(process.env, sessions, () => { }, fs));
+    req.post('/login')
+      .send('username=rishabh')
+      .expect(400, done)
+  });
+});
+
+describe('/GET logout', () => {
+  it('should clear cookie of user.', (done) => {
+    const users = { rishabh: { username: 'rishabh', password: '123' } };
+
+    const mockedReadFileSync = mockReadFileSync(
+      [process.env.commentsFile, process.env.flowerData, process.env.usersData, './data/users.json'],
+      ['hello', , JSON.stringify(users)]
+    );
+
+    const fs = {
+      readFileSync: mockedReadFileSync
+    }
+
+    const sessions = { 1: { sessionId: 1, username: 'rishabh' } }
+    const req = request(createApp(process.env, sessions, () => { }, fs));
+    req.get('/logout')
+      .set('Cookie', 'sessionId=1')
+      .expect('set-cookie', 'sessionId=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT')
+      .expect(302, done)
+  });
+  it('should redirect to home if user is not logged in.', (done) => {
+    const users = { rishabh: { username: 'rishabh', password: '123' } };
+
+    const mockedReadFileSync = mockReadFileSync(
+      [process.env.commentsFile, process.env.flowerData, process.env.usersData, './data/users.json'],
+      ['hello', , JSON.stringify(users)]
+    );
+
+    const fs = {
+      readFileSync: mockedReadFileSync
+    }
+
+    const sessions = { 1: { sessionId: 1, username: 'rishabh' } }
+    const req = request(createApp(process.env, sessions, () => { }, fs));
+    req.get('/logout')
+      .expect(302, done)
   });
 });

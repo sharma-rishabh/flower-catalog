@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "dirName=./public commentsFile=./data/comments.json flowerData=./data/flowerData.json mocha",
-    "start": "dirName=./public commentsFile=./data/comments.json flowerData=./data/flowerData.json node index.js"
+    "test": "dirName=./public commentsFile=./data/comments.json flowerData=./data/flowerData.json usersData=./data/users.json mocha",
+    "start": "dirName=./public commentsFile=./data/comments.json flowerData=./data/flowerData.json usersData=./data/users.json node index.js"
   },
   "repository": {
     "type": "git",

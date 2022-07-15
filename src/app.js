@@ -10,6 +10,7 @@ const { parseCookies } = require('./handlers/parseCookies.js');
 const { createInjectSession } = require('./createInjectSession.js');
 const { serveLoginForm, login } = require('./handlers/loginHanler.js');
 const { logout } = require('./handlers/logout.js');
+const { serveSignupForm, signup } = require('./handlers/signupHandler.js');
 
 const readJSON = (fileName, reader) => {
   try {
@@ -43,7 +44,9 @@ const createApp = (config, sessions, logger, fs) => {
   app.use(express.static(config.dirName));
   app.get('/login', serveLoginForm);
   app.post('/login', login(sessions, users));
-  app.get('/logout', logout(sessions))
+  app.get('/logout', logout(sessions));
+  app.get('/signup', serveSignupForm);
+  app.post('/signup', signup(config.usersData, users, fs));
   app.get('/guest-book', guestBookHandler(comments, fs));
   app.use(express.urlencoded({ extended: true }))
   app.post('/add-comment', addComment(comments, config.commentsFile, fs));

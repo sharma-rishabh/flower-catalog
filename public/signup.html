@@ -5,21 +5,18 @@
 </head>
 
 <body>
-  <form action="/sign-up" method="post">
-    <label for="name"> Name :
-      <input type="text" name="name" id="name" />
-    </label> <br />
-    <label for="email"> Email :
-      <input type="email" name="email" id="email" />
-    </label><br />
-    <label for="password"> Password :
+  <form action="/signup" method="post">
+    <div class="username">
+      <label for="username"> Username :</label>
+      <input type="text" name="username" id="username" />
+    </div>
+    <div class="password">
+      <label for="password"> Password :</label>
       <input type="password" name="password" id="password" />
-    </label><br />
-    <label for="mobNo"> Mobile No :
-      <input type="text" name="mobNo" id="mobNo" />
-    </label><br />
+    </div>
     <input type="submit" value="submit" />
   </form>
+  <a href="login">Login</a>
 </body>
 
 </html>

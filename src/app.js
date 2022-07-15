@@ -6,6 +6,7 @@ const { Comments } = require('./comments.js');
 const { logRequest } = require('./handlers/logRequest.js');
 const { addTimeStamp } = require('./handlers/addTimeStamp.js');
 const { flowerApiHandler, guestApiHandler } = require('./handlers/apiHandler.js');
+const { parseCookies } = require('./handlers/parseCookies.js');
 
 const readJSON = (fileName, reader) => {
   try {
@@ -31,6 +32,7 @@ const createApp = (config, logger, fs) => {
 
   const app = express();
   app.use(addTimeStamp);
+  app.use(parseCookies);
   app.use(logRequest(logger));
   app.use(express.static(config.dirName));
   app.get('/guest-book', guestBookHandler(comments, fs));
